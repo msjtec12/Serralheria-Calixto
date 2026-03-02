@@ -6,13 +6,14 @@ import p5 from "@/assets/portfolio-5.jpg";
 import p6 from "@/assets/portfolio-6.jpg";
 
 const images = [
-  { src: p1, alt: "Portão metálico residencial" },
-  { src: p2, alt: "Corrimão em ferro forjado" },
-  { src: p3, alt: "Grade de proteção para janela" },
-  { src: p4, alt: "Estrutura metálica industrial" },
-  { src: p5, alt: "Portão automático" },
-  { src: p6, alt: "Guarda-corpo metálico" },
+  { src: p1, alt: "Portão Basculante no Morumbi" },
+  { src: p2, alt: "Corrimão Inox de Alto Padrão" },
+  { src: p3, alt: "Grades de Segurança Reforçadas" },
+  { src: p4, alt: "Estrutura Metálica para Cobertura" },
+  { src: p5, alt: "Portão Automático de Alumínio" },
+  { src: p6, alt: "Guarda-corpo Minimalista" },
 ];
+
 
 const GallerySection = () => (
   <section id="portfolio" className="section-padding bg-secondary">

@@ -4,7 +4,9 @@ import HeroSection from "@/components/HeroSection";
 import ServicesSection from "@/components/ServicesSection";
 import DifferentialsSection from "@/components/DifferentialsSection";
 import GallerySection from "@/components/GallerySection";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import AboutSection from "@/components/AboutSection";
+import GoogleMap from "@/components/GoogleMap";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
@@ -17,11 +19,14 @@ const Index = () => (
     <ServicesSection />
     <DifferentialsSection />
     <GallerySection />
+    <TestimonialsSection />
     <AboutSection />
+    <GoogleMap />
     <CTASection />
     <Footer />
     <FloatingWhatsApp />
   </>
 );
+
 
 export default Index;

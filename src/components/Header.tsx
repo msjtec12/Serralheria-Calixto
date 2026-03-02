@@ -23,13 +23,27 @@ const Header = () => {
           </span>
         </a>
 
-        <nav className="hidden md:flex items-center gap-8">
+        <nav className="hidden lg:flex items-center gap-8">
           {links.map((l) => (
             <a key={l.href} href={l.href} className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors uppercase tracking-wider">
               {l.label}
             </a>
           ))}
         </nav>
+
+        <div className="hidden md:flex items-center gap-4">
+          <a
+            href="https://wa.me/5511999999999?text=Olá! Gostaria de um orçamento."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-primary text-primary-foreground text-xs font-bold px-6 py-3 rounded-sm hover:scale-105 transition-all shadow-lg shadow-primary/20"
+          >
+            SOLICITAR ORÇAMENTO
+          </a>
+          <button onClick={() => setOpen(!open)} className="lg:hidden text-foreground" aria-label="Menu">
+            {open ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
 
         <button onClick={() => setOpen(!open)} className="md:hidden text-foreground" aria-label="Menu">
           {open ? <X size={24} /> : <Menu size={24} />}
