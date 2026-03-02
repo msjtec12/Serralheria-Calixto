@@ -1,0 +1,4 @@
+/* Reset app css - all styles managed by tailwind */
+html {
+  scroll-behavior: smooth;
+}
