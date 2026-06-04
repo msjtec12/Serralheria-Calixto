@@ -1,0 +1,185 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Para desenvolvimento estamos usando SQLite conforme combinado.
+// Para produção (Vercel Postgres, Supabase, etc), mude o provider para "postgresql"
+// e adicione a variável DATABASE_URL no seu painel de deploy ou .env.
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          String    @default("CASHIER") // ADMIN, MANAGER, CASHIER
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sales         Sale[]
+  cashRegisters CashRegister[]
+  auditLogs     AuditLog[]
+}
+
+model Company {
+  id        String   @id @default(cuid())
+  name      String
+  cnpj      String?
+  phone     String?
+  logoUrl   String?
+  address   String?
+  theme     String   @default("light")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Product {
+  id                 String              @id @default(cuid())
+  name               String
+  internalCode       String?             @unique
+  barcode            String?             @unique
+  description        String?
+  costPrice          Float               @default(0)
+  sellPrice          Float               @default(0)
+  stock              Float               @default(0)
+  minStock           Float               @default(0)
+  unit               String              @default("UN") // UN, KG, CX
+  imageUrl           String?
+  
+  categoryId         String?
+  category           Category?           @relation(fields: [categoryId], references: [id])
+  
+  saleItems          SaleItem[]
+  inventoryMovements InventoryMovement[]
+
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+}
+
+model Customer {
+  id          String   @id @default(cuid())
+  name        String
+  document    String?  @unique // CPF or CNPJ
+  phone       String?
+  email       String?
+  address     String?
+  notes       String?
+  
+  sales       Sale[]
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Sale {
+  id             String       @id @default(cuid())
+  total          Float        @default(0)
+  discount       Float        @default(0)
+  subtotal       Float        @default(0)
+  status         String       @default("COMPLETED") // COMPLETED, CANCELED
+
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  
+  customerId     String?
+  customer       Customer?    @relation(fields: [customerId], references: [id])
+
+  cashRegisterId String?
+  cashRegister   CashRegister? @relation(fields: [cashRegisterId], references: [id])
+
+  items          SaleItem[]
+  payments       Payment[]
+
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+}
+
+model SaleItem {
+  id         String   @id @default(cuid())
+  quantity   Float
+  unitPrice  Float
+  subtotal   Float
+
+  saleId     String
+  sale       Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+}
+
+model Payment {
+  id         String   @id @default(cuid())
+  method     String   // CASH, PIX, DEBIT, CREDIT, STORE_CREDIT
+  amount     Float
+
+  saleId     String
+  sale       Sale     @relation(fields: [saleId], references: [id], onDelete: Cascade)
+
+  createdAt  DateTime @default(now())
+}
+
+model CashRegister {
+  id            String   @id @default(cuid())
+  initialAmount Float    @default(0)
+  finalAmount   Float?
+  status        String   @default("OPEN") // OPEN, CLOSED
+  openedAt      DateTime @default(now())
+  closedAt      DateTime?
+
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+
+  sales         Sale[]
+  movements     CashMovement[]
+}
+
+model CashMovement {
+  id             String       @id @default(cuid())
+  type           String       // SANGRIA (retirada), SUPRIMENTO (entrada)
+  amount         Float
+  reason         String?
+
+  cashRegisterId String
+  cashRegister   CashRegister @relation(fields: [cashRegisterId], references: [id])
+
+  createdAt      DateTime     @default(now())
+}
+
+model InventoryMovement {
+  id        String   @id @default(cuid())
+  type      String   // IN, OUT, ADJUSTMENT
+  quantity  Float
+  reason    String?
+
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String   // LOGIN, DELETE, UPDATE, CANCEL
+  entity    String   // Product, Sale, User, etc.
+  entityId  String?
+  details   String?
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+}
